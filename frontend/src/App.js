@@ -1,35 +1,68 @@
-import logo from './logo.svg';
-import './App.css';
-import {useState, useEffect} from 'react';
+import {useState, useEffect } from 'react';
+import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 
-function App() {
-  //useState creates a state variable
-  //message = current value 
-  //setMessage = function to update the value
-  //Loading... = starting value
-  const [message, setMessage] = useState('Loading...');
+function App(){
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  //useEfect runs code when the component loads
-  //this is where we call the backend 
+  //Check if the user is already logged in (token in localStorage)
   useEffect(() => {
-    //fetch() makes an HTTP request to the backend 
-    // 'http://localhost:3001/api/health' = the backend URL we created
-    fetch('http://localhost:3001/api/health')
-    //.then(res => res.json()) = wait for response, convert to JSON
-    .then(res => res.json())
-    //.then (data => setMessage(data.status)) = update message with the response
-    .then(data => setMessage(data.status))
-    //.catch(err => ...) = if something goes wrong, show the error
-    .catch(err => setMessage('Error:' + err.message));
-  }, []); // [] = runs this ONCE when component loads
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+
+    if (token && userData) {
+      setUser(JSON.parse(userData));
+    }
+    setLoading(false);
+  }, []);
+
+  const handleLoginSuccess = (userData) => {
+    setUser(userData);
+  };
+
+  const handleSignupSuccess = (userData) => {
+    setUser(userData);
+  };
+
+  
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUser(null);
+  }
+
+  if (loading){
+    return <div className='flex items-center justify-center min-h-screen'>Loading...</div>;
+  }
 
   //Return the HTML that shows on screen
   return (
-    <div style={{padding: '20px', fontSize: '18px'}}>
-      <h1>FinFlow</h1>
-      <p>Backend says: {message}</p>
-    </div>
+    <Router>
+      <Routes>
+        {/* If user not logged in, show login/signup pages */}
+        {!user ? (
+          <>
+            <Route path="/login" element={<LoginPage onLoginSuccess={handleLoginSuccess} />} />
+            <Route path="/signup" element={<SignupPage onSignupSuccess={handleSignupSuccess} />} />
+            <Route path="*" element={<Navigate to="/login" />} />
+          </>
+        ) : (
+          <>
+            {/* If user IS logged in, show dashboard (we'll build this next) */}
+            <Route path="/dashboard" element={<div>Dashboard Coming Soon!</div>} />
+            <Route path="*" element={<Navigate to="/dashboard" />} />
+          </>
+        )}
+      </Routes>
+    </Router>
   );
 }
 
 export default App;
+
+
+
+

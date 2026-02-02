@@ -20,7 +20,10 @@ const app = express();
 app.use(cors());
 
 //Parse incoming JSON requests
-app.use(express.json());
+app.use(express.json({ 
+  type: ['application/json'],
+  charset: 'utf-8'
+}));
 
 //Import auth routes
 const authRoutes = require('./routes/auth');
