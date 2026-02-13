@@ -33,6 +33,24 @@ router.post('/signup', async(req,res) => {
 
         const user = result.rows[0];
 
+        //CReate default categories for the user
+        const defaultCategories = [
+            {name: 'Food', type: 'expense', color: '#10b981'},
+            {name: 'Transport', type: 'expense', color: '#3b82f6'},
+            {name: 'Entertainment', type: 'expense', color: '#f59e0b'},
+            {name: 'Utilities', type: 'expense', color: '#8b5cf6'},
+            {name: 'Salary', type: 'income', color: '#10b981'},
+            {name: 'Freelance', type: 'income', color: '#06b6d4'},
+            {name: 'Other', type: 'expense', color: '#6b7280'},
+        ];
+
+        for (const category of defaultCategories) {
+            await pool.query(
+                'INSERT INTO categories (user_id, name, type, color) VALUES ($1, $2, $3, $4)',
+                [user.id, category.name , category.type, category.color]
+            );
+        }
+
         //Generate JWT token
         const token = jwt.sign({ id: user.id, email: user.email}, process.env.JWT_SECRET, {
             expiresIn: process.env.JWT_EXPIRE

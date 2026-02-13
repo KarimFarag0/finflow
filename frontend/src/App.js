@@ -2,6 +2,7 @@ import {useState, useEffect } from 'react';
 import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
+import DashboardPage from './pages/DashboardPage';
 
 function App(){
   const [user, setUser] = useState(null);
@@ -42,18 +43,16 @@ function App(){
   return (
     <Router>
       <Routes>
-        {/* If user not logged in, show login/signup pages */}
         {!user ? (
           <>
             <Route path="/login" element={<LoginPage onLoginSuccess={handleLoginSuccess} />} />
             <Route path="/signup" element={<SignupPage onSignupSuccess={handleSignupSuccess} />} />
-            <Route path="*" element={<Navigate to="/login" />} />
+            <Route path="*" element={<Navigate to="/login" replace />} />
           </>
         ) : (
           <>
-            {/* If user IS logged in, show dashboard (we'll build this next) */}
-            <Route path="/dashboard" element={<div>Dashboard Coming Soon!</div>} />
-            <Route path="*" element={<Navigate to="/dashboard" />} />
+            <Route path="/dashboard" element={<DashboardPage  user={user} onLogout={handleLogout}/>} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </>
         )}
       </Routes>

@@ -28,10 +28,12 @@ app.use(express.json({
 //Import auth routes
 const authRoutes = require('./routes/auth');
 const transactionRoutes = require('./routes/transactions');
+const categoriesRoutes = require('./routes/categories');
 
 //Use auth routes
 app.use('/api/auth', authRoutes);
 app.use('/api/transactions', transactionRoutes);
+app.use('/api/categories', categoriesRoutes);
 
 //Routes
 //Test endpoints - check if server is running
