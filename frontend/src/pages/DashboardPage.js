@@ -175,6 +175,24 @@ export default function DashboardPage({ user, onLogout }) {
     return category ? category.color : '#7BAE6E';
   };
 
+  const handleDeleteTransaction = async (transactionId) => {
+    if(!window.confirm('Delete this transaction?')) return;
+
+    try{
+        const token = localStorage.getItem('token');
+        await axios.delete(`http://localhost:3001/api/transactions/${transactionId}`, {
+            headers: {'Authorization': `Bearer ${token}`}
+        });
+
+        setSuccessMessage('Transaction deleted');
+        setTimeout(() => setSuccessMessage(''), 3000);
+        fetchTransactions();
+    }catch(err) {
+        alert('Failed to delete');
+        console.error(err);
+    }
+  };
+
   // ============ SVG ILLUSTRATIONS ============
   
   // Hand-drawn piggy bank
@@ -494,6 +512,16 @@ export default function DashboardPage({ user, onLogout }) {
                   >
                     {t.type === 'income' ? '+' : '-'}${parseFloat(t.amount).toFixed(2)}
                   </span>
+
+                  {/* DELETE BUTTON */}
+                  <button 
+                    onClick={() => handleDeleteTransaction(t.id)}
+                    className='opacity-0 group-hover: opacity-100 transition-opacity text-red-500 hover:text-red-700 text-lg'
+                    title='Delete'
+                  >
+                    🗑️
+
+                  </button>
                 </div>
               ))}
             </div>
