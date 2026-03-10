@@ -4,6 +4,8 @@ import axios from 'axios';
 import { ReactComponent as SavingsIllustration } from '../Images/Savings-cuate.svg';
 import { ReactComponent as WavingHands } from '../Images/waving-hand.svg';
 
+import SpendingChart from '../Components/SpendingChart';
+
 
 
 import dogImage from '../Images/Hobbies - Dog.png';
@@ -527,6 +529,8 @@ export default function DashboardPage({ user, onLogout }) {
             </div>
           )}
         </div>
+
+        <SpendingChart transactions={transactions} categories={categories} />
       </div>
 
       {/* Modal */}
